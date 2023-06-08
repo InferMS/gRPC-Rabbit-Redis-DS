@@ -3,13 +3,16 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 message pollutionData {
-  float coefficient=1;
+  int32 id=1;
   google.protobuf.Timestamp timestamp=2;
+  float coefficient=3;
+
 }
 
 message wellnessData {
-  float coefficient=1;
+  int32 id=1;
   google.protobuf.Timestamp timestamp=2;
+  float coefficient=3;
 }
 
 message airData {

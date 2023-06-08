@@ -16,17 +16,21 @@ class airData(_message.Message):
     def __init__(self, pollution: _Optional[_Iterable[_Union[pollutionData, _Mapping]]] = ..., wellness: _Optional[_Iterable[_Union[wellnessData, _Mapping]]] = ...) -> None: ...
 
 class pollutionData(_message.Message):
-    __slots__ = ["coefficient", "timestamp"]
+    __slots__ = ["coefficient", "id", "timestamp"]
     COEFFICIENT_FIELD_NUMBER: _ClassVar[int]
+    ID_FIELD_NUMBER: _ClassVar[int]
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     coefficient: float
+    id: int
     timestamp: _timestamp_pb2.Timestamp
-    def __init__(self, coefficient: _Optional[float] = ..., timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[int] = ..., timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., coefficient: _Optional[float] = ...) -> None: ...
 
 class wellnessData(_message.Message):
-    __slots__ = ["coefficient", "timestamp"]
+    __slots__ = ["coefficient", "id", "timestamp"]
     COEFFICIENT_FIELD_NUMBER: _ClassVar[int]
+    ID_FIELD_NUMBER: _ClassVar[int]
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     coefficient: float
+    id: int
     timestamp: _timestamp_pb2.Timestamp
-    def __init__(self, coefficient: _Optional[float] = ..., timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[int] = ..., timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., coefficient: _Optional[float] = ...) -> None: ...

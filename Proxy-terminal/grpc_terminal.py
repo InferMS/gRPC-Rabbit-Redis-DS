@@ -2,6 +2,9 @@ import grpc, time
 from concurrent import futures
 from google.protobuf.timestamp_pb2 import Timestamp ;
 from terminal_service import terminal_service
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 # import the generated classes
 import terminal_pb2
