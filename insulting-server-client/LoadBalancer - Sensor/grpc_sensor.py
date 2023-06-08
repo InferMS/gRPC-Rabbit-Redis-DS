@@ -7,7 +7,7 @@ import grpc
 import meteo_utils
 import sensorLoadBalancer_pb2
 import sensorLoadBalancer_pb2_grpc
-
+from google.protobuf.timestamp_pb2 import Timestamp
 
 class Sensor:
     def __init__(self, sensorId, sensorType):
@@ -17,25 +17,40 @@ class Sensor:
         self.stub = sensorLoadBalancer_pb2_grpc.LoadBalancerStub(channel)
 
     def sendData(self):
+        timestamp = Timestamp()
+        timestamp.GetCurrentTime()
         detector = meteo_utils.MeteoDataDetector()
         # MeteoData
         if self.sensorType == 0:
-            self.__sendMeteoData(detector)
+            self.__sendMeteoData(detector, timestamp)
         # PollutionData
         if self.sensorType == 1:
-            self.__sendPollutionData(detector)
+            self.__sendPollutionData(detector, timestamp)
 
-    def __sendMeteoData(self, detector):
+    def __sendMeteoData(self, detector, timestamp):
         air = detector.analyze_air()
-        RawMeteoData = sensorLoadBalancer_pb2.RawMeteoData(temperature=air["temperature"], humidity=air["humidity"])
-        print(f"Sensor {self.sensorId} sending MeteoData")
-        self.stub.sendMeteoData(RawMeteoData)
+        SensorMeteoData = sensorLoadBalancer_pb2.SensorMeteoData(
+            id=self.sensorId
+        )
 
-    def __sendPollutionData(self, detector):
+        SensorMeteoData.RawMeteoData.temperature=air['temperature']
+        SensorMeteoData.RawMeteoData.humidity=air['humidity']
+        SensorMeteoData.RawMeteoData.timestamp=timestamp
+
+        print(f"Sensor {SensorMeteoData.id} sending Meteo Data at {SensorMeteoData.RawMeteoData.timestamp}")
+        self.stub.sendMeteoData(SensorMeteoData)
+
+    def __sendPollutionData(self, detector, timestamp):
         pollution = detector.analyze_pollution()
-        pollutionData = sensorLoadBalancer_pb2.RawPollutionData(co2=pollution["co2"])
-        print(f"Sensor {self.sensorId} sending PollutionData")
-        self.stub.sendPollutionData(pollutionData)
+        SensorPollutionData = sensorLoadBalancer_pb2.SensorPollutionData(
+            id=self.sensorId,
+        )
+
+        SensorPollutionData.RawPollutionData.co2 = pollution['co2']
+        SensorPollutionData.RawPollutionData.timestamp=timestamp
+
+        print(f"Sensor {SensorPollutionData.id} sending Pollution Data at {SensorPollutionData.RawPollutionData.timestamp}")
+        self.stub.sendPollutionData(SensorPollutionData)
 
     def start(self):
         while True:

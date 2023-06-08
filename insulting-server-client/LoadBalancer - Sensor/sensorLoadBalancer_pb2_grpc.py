@@ -17,12 +17,12 @@ class LoadBalancerStub(object):
         """
         self.sendMeteoData = channel.unary_unary(
                 '/LoadBalancer/sendMeteoData',
-                request_serializer=sensorLoadBalancer__pb2.RawMeteoData.SerializeToString,
+                request_serializer=sensorLoadBalancer__pb2.SensorMeteoData.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.sendPollutionData = channel.unary_unary(
                 '/LoadBalancer/sendPollutionData',
-                request_serializer=sensorLoadBalancer__pb2.RawPollutionData.SerializeToString,
+                request_serializer=sensorLoadBalancer__pb2.SensorPollutionData.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
 
@@ -47,12 +47,12 @@ def add_LoadBalancerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'sendMeteoData': grpc.unary_unary_rpc_method_handler(
                     servicer.sendMeteoData,
-                    request_deserializer=sensorLoadBalancer__pb2.RawMeteoData.FromString,
+                    request_deserializer=sensorLoadBalancer__pb2.SensorMeteoData.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'sendPollutionData': grpc.unary_unary_rpc_method_handler(
                     servicer.sendPollutionData,
-                    request_deserializer=sensorLoadBalancer__pb2.RawPollutionData.FromString,
+                    request_deserializer=sensorLoadBalancer__pb2.SensorPollutionData.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
@@ -77,7 +77,7 @@ class LoadBalancer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/LoadBalancer/sendMeteoData',
-            sensorLoadBalancer__pb2.RawMeteoData.SerializeToString,
+            sensorLoadBalancer__pb2.SensorMeteoData.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -94,7 +94,7 @@ class LoadBalancer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/LoadBalancer/sendPollutionData',
-            sensorLoadBalancer__pb2.RawPollutionData.SerializeToString,
+            sensorLoadBalancer__pb2.SensorPollutionData.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -21,8 +21,6 @@ print('Starting LB. Listening on port 50051.')
 server.add_insecure_port('0.0.0.0:50051')
 server.start()
 
-time.sleep(5)
-
 clients = [
     grpc_sensor.Sensor(sensorId=1, sensorType=0),
     grpc_sensor.Sensor(sensorId=2, sensorType=1),

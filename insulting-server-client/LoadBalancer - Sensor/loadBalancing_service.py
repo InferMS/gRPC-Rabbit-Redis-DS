@@ -3,6 +3,7 @@ import random
 
 class InsultingService:
 
+
     def __init__(self):
         self.insults_set = set()
 
