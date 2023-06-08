@@ -26,5 +26,5 @@ class LoadBalancerServicer(sensorLoadBalancer_pb2_grpc.LoadBalancerServicer):
         response = sensorLoadBalancer_pb2.google_dot_protobuf_dot_empty__pb2.Empty()
         return response
 
-    def chooseServer(self, sensorId, context):
+    # def chooseServer(self, sensorId, context):
 

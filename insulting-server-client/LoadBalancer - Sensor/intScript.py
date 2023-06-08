@@ -38,11 +38,14 @@ def main():
 
     servers = []
     for index in range(int(servers_num)):
+        print(f"Este: {index}")
         servers.append(grpc.server(futures.ThreadPoolExecutor(max_workers=10)))
         loadBalancerServer_pb2_grpc.add_ServerServicer_to_server(
             grpc_server.ServerServicer,
             servers[-1]
         )
+        servers[-1].add_insecure_port(f"0.0.0.0:{50051+index+1}")
+        servers[-1].start()
     time.sleep(2)
 
     # create a gRPC server
