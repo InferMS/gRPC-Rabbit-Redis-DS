@@ -5,6 +5,7 @@ import time
 # import the generated classes
 import sensorLoadBalancer_pb2
 import sensorLoadBalancer_pb2_grpc
+import queue
 
 # import the original insultingServer.py
 
@@ -12,7 +13,7 @@ import sensorLoadBalancer_pb2_grpc
 # create a class to define the server functions, derived from
 # insultingServer_pb2_grpc.InsultingServiceServicer
 class LoadBalancerServicer(sensorLoadBalancer_pb2_grpc.LoadBalancerServicer):
-
+    requests = queue.Queue()
     def sendMeteoData(self, SensorMeteoData, context):
         # Contactar con server real
         print(f"Meteo Data received from Sensor {SensorMeteoData.id} -> Temperature: {SensorMeteoData.RawMeteoData.temperature} Humidity: {SensorMeteoData.RawMeteoData.humidity}")
@@ -25,4 +26,5 @@ class LoadBalancerServicer(sensorLoadBalancer_pb2_grpc.LoadBalancerServicer):
         response = sensorLoadBalancer_pb2.google_dot_protobuf_dot_empty__pb2.Empty()
         return response
 
+    def chooseServer(self, sensorId, context):
 

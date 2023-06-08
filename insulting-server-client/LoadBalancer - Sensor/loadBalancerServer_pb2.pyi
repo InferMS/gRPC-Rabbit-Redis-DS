@@ -6,7 +6,7 @@ from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Opti
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class SensorMeteoData(_message.Message):
+class ForwardSensorMeteoData(_message.Message):
     __slots__ = ["id"]
     class RawMeteoData(_message.Message):
         __slots__ = ["humidity", "temperature", "timestamp"]
@@ -21,7 +21,7 @@ class SensorMeteoData(_message.Message):
     id: int
     def __init__(self, id: _Optional[int] = ...) -> None: ...
 
-class SensorPollutionData(_message.Message):
+class ForwardSensorPollutionData(_message.Message):
     __slots__ = ["id"]
     class RawPollutionData(_message.Message):
         __slots__ = ["co2", "timestamp"]

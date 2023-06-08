@@ -2,7 +2,7 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-message  SensorMeteoData {
+message  ForwardSensorMeteoData {
   int32 id = 1;
   message RawMeteoData {
     float temperature = 1;
@@ -11,7 +11,7 @@ message  SensorMeteoData {
   }
 }
 
-message SensorPollutionData {
+message ForwardSensorPollutionData {
   int32 id = 1;
   message RawPollutionData {
     float co2 = 1;
@@ -21,6 +21,6 @@ message SensorPollutionData {
 
 
 service Server {
-  rpc sendMeteoData (SensorMeteoData) returns (google.protobuf.Empty) {}
-  rpc sendPollutionData (SensorPollutionData) returns (google.protobuf.Empty) {}
+  rpc processMeteoData (ForwardSensorMeteoData) returns (google.protobuf.Empty) {}
+  rpc processPollutionData (ForwardSensorPollutionData) returns (google.protobuf.Empty) {}
 }

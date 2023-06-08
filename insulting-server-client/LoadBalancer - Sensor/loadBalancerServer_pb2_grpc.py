@@ -15,14 +15,14 @@ class ServerStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.sendMeteoData = channel.unary_unary(
-                '/Server/sendMeteoData',
-                request_serializer=loadBalancerServer__pb2.SensorMeteoData.SerializeToString,
+        self.processMeteoData = channel.unary_unary(
+                '/Server/processMeteoData',
+                request_serializer=loadBalancerServer__pb2.ForwardSensorMeteoData.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
-        self.sendPollutionData = channel.unary_unary(
-                '/Server/sendPollutionData',
-                request_serializer=loadBalancerServer__pb2.SensorPollutionData.SerializeToString,
+        self.processPollutionData = channel.unary_unary(
+                '/Server/processPollutionData',
+                request_serializer=loadBalancerServer__pb2.ForwardSensorPollutionData.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
 
@@ -30,13 +30,13 @@ class ServerStub(object):
 class ServerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def sendMeteoData(self, request, context):
+    def processMeteoData(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def sendPollutionData(self, request, context):
+    def processPollutionData(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -45,14 +45,14 @@ class ServerServicer(object):
 
 def add_ServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'sendMeteoData': grpc.unary_unary_rpc_method_handler(
-                    servicer.sendMeteoData,
-                    request_deserializer=loadBalancerServer__pb2.SensorMeteoData.FromString,
+            'processMeteoData': grpc.unary_unary_rpc_method_handler(
+                    servicer.processMeteoData,
+                    request_deserializer=loadBalancerServer__pb2.ForwardSensorMeteoData.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
-            'sendPollutionData': grpc.unary_unary_rpc_method_handler(
-                    servicer.sendPollutionData,
-                    request_deserializer=loadBalancerServer__pb2.SensorPollutionData.FromString,
+            'processPollutionData': grpc.unary_unary_rpc_method_handler(
+                    servicer.processPollutionData,
+                    request_deserializer=loadBalancerServer__pb2.ForwardSensorPollutionData.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
@@ -66,7 +66,7 @@ class Server(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def sendMeteoData(request,
+    def processMeteoData(request,
             target,
             options=(),
             channel_credentials=None,
@@ -76,14 +76,14 @@ class Server(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Server/sendMeteoData',
-            loadBalancerServer__pb2.SensorMeteoData.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/Server/processMeteoData',
+            loadBalancerServer__pb2.ForwardSensorMeteoData.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def sendPollutionData(request,
+    def processPollutionData(request,
             target,
             options=(),
             channel_credentials=None,
@@ -93,8 +93,8 @@ class Server(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Server/sendPollutionData',
-            loadBalancerServer__pb2.SensorPollutionData.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/Server/processPollutionData',
+            loadBalancerServer__pb2.ForwardSensorPollutionData.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
