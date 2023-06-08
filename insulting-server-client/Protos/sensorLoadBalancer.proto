@@ -21,6 +21,6 @@ message SensorPollutionData {
 
 
 service LoadBalancer {
-  rpc sendMeteoData (SensorMeteoData) returns (google.protobuf.Empty) {}
-  rpc sendPollutionData (SensorPollutionData) returns (google.protobuf.Empty) {}
+  rpc processMeteoData (SensorMeteoData) returns (google.protobuf.Empty) {}
+  rpc processPollutionData (SensorPollutionData) returns (google.protobuf.Empty) {}
 }
