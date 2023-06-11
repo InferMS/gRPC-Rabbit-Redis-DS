@@ -1,39 +1,53 @@
-import random
-import hashlib
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 
 class terminal_service():
-
     def __init__(self):
         self.dict_pollution = dict()
         self.dict_wellness = dict()
-    def send_results(self,pollutionData,wellnessData):
+        self.first = True
+        self.data_points_pollution = {}  # Diccionario para almacenar los datos por ID
+        self.data_points_wellness = {}  # Diccionario para almacenar los datos por ID
 
-        timestamps1 = []
-        timestamps2 = []
-        values_pollution = dict()
-        values_wellness = dict()
-        fig, ax = plt.subplots()
-
+    def send_results(self, pollutionData, wellnessData):
+        fig, (ax_pollution, ax_wellness) = plt.subplots(2, 1, figsize=(8, 6))
+        print(pollutionData)
+        print(wellnessData)
         for x in pollutionData:
-            timestamps1.append(str(x.timestamp))
-            values_pollution[str(x.timestamp)] = x.coefficient
-            self.dict_pollution[x.id] = values_pollution
-            #print(timestamps1)
-            #print(self.dict_pullution[x.id][str(x.timestamp)])
-            for y in timestamps1:
-                ax.plot(y, self.dict_pollution[x.id][str(x.timestamp)], marker='o')
-        plt.show()
-        plt.close()
+            id = x.id
+            if id not in self.data_points_pollution:
+                self.data_points_pollution[id] = {'timestamps': [], 'coefficients': []}
+            if x.timestamp in self.data_points_pollution[id]['timestamps']:
+                index = self.data_points_pollution[id]['timestamps'].index(x.timestamp)
+                self.data_points_pollution[id]['coefficients'][index] = x.coefficient
+                continue  # Si el timestamp ya ha sido registrado para este ID, pasar al siguiente dato
+            self.data_points_pollution[id]['timestamps'].append(x.timestamp)  # Almacenar el timestamp
+            self.data_points_pollution[id]['coefficients'].append(x.coefficient)  # Almacenar el coeficiente
+        for id, data in self.data_points_pollution.items():
+            ax_pollution.plot(data['timestamps'], data['coefficients'], marker='o', label=f'ID {id}')  # Graficar los puntos y asignar etiqueta a cada línea
+
+        ax_pollution.set_title('Pollution', loc="left", fontdict={'fontsize': 14, 'fontweight': 'bold', 'color': 'tab:blue'})
+        ax_pollution.legend()  # Mostrar leyenda con las etiquetas de las líneas
+
         for x in wellnessData:
-            timestamps2.append(str(x.timestamp))
-            values_wellness[str(x.timestamp)] = x.coefficient
-            self.dict_wellness[x.id] = values_wellness
-            for y in timestamps2:
-                ax.plot(y, self.dict_wellness[x.id][str(x.timestamp)], marker='^')
+            id = x.id
+            if id not in self.data_points_wellness:
+                self.data_points_wellness[id] = {'timestamps': [], 'coefficients': []}
+            if x.timestamp in self.data_points_wellness[id]['timestamps']:
+                index = self.data_points_wellness[id]['timestamps'].index(x.timestamp)
+                self.data_points_wellness[id]['coefficients'][index] = x.coefficient
+                continue  # Si el timestamp ya ha sido registrado para este ID, pasar al siguiente dato
+            self.data_points_wellness[id]['timestamps'].append(x.timestamp)  # Almacenar el timestamp
+            self.data_points_wellness[id]['coefficients'].append(x.coefficient)  # Almacenar el coeficiente
+        for id, data in self.data_points_wellness.items():
+            ax_wellness.plot(data['timestamps'], data['coefficients'], marker='o', label=f'ID {id}')  # Graficar los puntos y asignar etiqueta a cada línea
+
+        ax_wellness.set_title('Wellness', loc="left", fontdict={'fontsize': 14, 'fontweight': 'bold', 'color': 'tab:blue'})
+        ax_wellness.legend()  # Mostrar leyenda con las etiquetas de las líneas
+
+        plt.tight_layout()  # Ajustar el espacio
         plt.show()
         plt.close()
+
 
 terminal_service = terminal_service()
+

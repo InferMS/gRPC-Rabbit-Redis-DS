@@ -1,10 +1,6 @@
 import grpc, time
 from concurrent import futures
-from google.protobuf.timestamp_pb2 import Timestamp ;
 from terminal_service import terminal_service
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 
 # import the generated classes
 import terminal_pb2
@@ -18,6 +14,32 @@ class send_resultsServicer(terminal_pb2_grpc.send_resultsServicer):
         response = terminal_pb2.google_dot_protobuf_dot_empty__pb2.Empty()
         return response
 
+def run_server(port):
+    # Configurar el servidor
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    terminal_pb2_grpc.add_send_resultsServicer_to_server(
+        send_resultsServicer(), server)
+    server.add_insecure_port(f'localhost:{port}')
+
+    # Iniciar el servidor
+    server.start()
+    print(f'Starting server. Listening on port {port}.')
+
+    # Mantener el servidor en ejecución
+    try:
+        while True:
+            time.sleep(86400)
+    except KeyboardInterrupt:
+        server.stop(0)
+
+if __name__ == '__main__':
+    base_port = 50051  # Puerto base
+    num_servers = 3  # Número total de servidores que deseas ejecutar
+
+    for i in range(num_servers):
+        port = base_port + i
+        run_server(port)
+"""
 # create a gRPC server
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
@@ -38,3 +60,4 @@ try:
         time.sleep(86400)
 except KeyboardInterrupt:
     server.stop(0)
+"""
