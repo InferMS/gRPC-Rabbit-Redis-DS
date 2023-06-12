@@ -1,7 +1,8 @@
 import grpc, redis, time, pickle
 from google.protobuf.timestamp_pb2 import Timestamp
 
-r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+r = redis.Redis(host='localhost', port=6379)
+
 p111 = []
 w111 = []
 
@@ -22,10 +23,18 @@ wellness[111] = w111
 
 #pollution = {str(key): value for key, value in pollution.items()}
 #wellness = {str(key): value for key, value in wellness.items()}
+
+# Guardar los bytes en Redis
 pollution_bytes = pickle.dumps(pollution)
 wellness_bytes = pickle.dumps(wellness)
 
-# Guardar los bytes en Redis
 r.execute_command('SET', 'pollution', pollution_bytes)
 r.execute_command('SET', 'wellness', wellness_bytes)
+#r.set('pollution',pollution)
+
+data3 = {"id": 111, "timer_seconds": pickled_object, "value": 23.5}
+data3_bytes = pickle.dumps(data3)
+r.append("pollution",data3_bytes)
+
+
 

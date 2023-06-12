@@ -1,4 +1,4 @@
-import pickle, redis, grpc, random, time
+import pickle, redis, grpc, time
 import terminal_pb2, terminal_pb2_grpc
 from google.protobuf.timestamp_pb2 import Timestamp
 
@@ -42,11 +42,15 @@ def generate_wellness_data():
             y["timer_seconds"] = z
     return wellness_dict
 
-def run_client():
+def run_client(terminals,servers):
     timestamp = 1
     # Configurar la conexión con el servidor
-    channel = grpc.insecure_channel('localhost:50051')
-    stub = terminal_pb2_grpc.send_resultsStub(channel)
+    stubs = []
+    for index in range(int(terminals)):
+        print(50051 + int(servers) + int(index) + 2)
+        channel = grpc.insecure_channel(f'localhost:{50051 + int(servers) + int(index) + 2}')
+        stubs.append(terminal_pb2_grpc.send_resultsStub(channel))
+
     while True:
         # Generate new data
         pollution_dict = generate_pollution_data()
@@ -77,8 +81,10 @@ def run_client():
                 w_last[y['id']] = y
 
         first_2 = True
-        data = terminal_pb2.airData(pollution=p1, wellness=w1)
-        stub.send_results(data)
+
+        for x in stubs:
+            data = terminal_pb2.airData(pollution=p1, wellness=w1)
+            x.send_results(data)
 
         time.sleep(timesleep)
         timestamp += 1
