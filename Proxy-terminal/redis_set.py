@@ -9,13 +9,13 @@ timer = Timestamp()
 timer.GetCurrentTime()
 
 pollution = dict()
-pickled_object = pickle.dumps(timer.seconds)
+pickled_object = pickle.dumps(timer)
 data1 = {"id": 111, "timer_seconds": pickled_object, "value": 0.5}
 p111.append(data1)
 pollution[111] = p111
 
 wellness = dict()
-pickled_object = pickle.dumps(timer.seconds)
+pickled_object = pickle.dumps(timer)
 data2 = {"id": 111, "timer_seconds": pickled_object, "value": 1.5}
 w111.append(data2)
 wellness[111] = w111

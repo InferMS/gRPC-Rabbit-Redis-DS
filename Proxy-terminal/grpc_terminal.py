@@ -9,7 +9,6 @@ import terminal_pb2_grpc
 class send_resultsServicer(terminal_pb2_grpc.send_resultsServicer):
 
     def send_results(self, airData, context):
-        #print(airData.wellness,airData.pollution)
         terminal_service.send_results(airData.pollution,airData.wellness)
         response = terminal_pb2.google_dot_protobuf_dot_empty__pb2.Empty()
         return response
@@ -34,7 +33,7 @@ def run_server(port):
 
 if __name__ == '__main__':
     base_port = 50051  # Puerto base
-    num_servers = 3  # Número total de servidores que deseas ejecutar
+    num_servers = 1  # Número total de servidores que deseas ejecutar
 
     for i in range(num_servers):
         port = base_port + i

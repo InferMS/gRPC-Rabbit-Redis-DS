@@ -22,8 +22,8 @@ class pollutionData(_message.Message):
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     coefficient: float
     id: int
-    timestamp: int
-    def __init__(self, id: _Optional[int] = ..., timestamp: _Optional[int] = ..., coefficient: _Optional[float] = ...) -> None: ...
+    timestamp: _timestamp_pb2.Timestamp
+    def __init__(self, id: _Optional[int] = ..., timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., coefficient: _Optional[float] = ...) -> None: ...
 
 class wellnessData(_message.Message):
     __slots__ = ["coefficient", "id", "timestamp"]
@@ -32,5 +32,5 @@ class wellnessData(_message.Message):
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     coefficient: float
     id: int
-    timestamp: int
-    def __init__(self, id: _Optional[int] = ..., timestamp: _Optional[int] = ..., coefficient: _Optional[float] = ...) -> None: ...
+    timestamp: _timestamp_pb2.Timestamp
+    def __init__(self, id: _Optional[int] = ..., timestamp: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., coefficient: _Optional[float] = ...) -> None: ...
