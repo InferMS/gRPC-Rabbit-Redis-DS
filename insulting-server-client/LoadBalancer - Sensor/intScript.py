@@ -48,17 +48,10 @@ def main():
         servers[-1].start()
     time.sleep(2)
 
-    # create a gRPC server
-    LB = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    # use the generated function `add_InsultingServiceServicer_to_server`
-    # to add the defined class to the server
-    sensorLoadBalancer_pb2_grpc.add_LoadBalancerServicer_to_server(
-        grpc_LoadBalancerServer.LoadBalancerServicer(), LB)
-
-    # listen on port 50051
-    print('Starting LB. Listening on port 50051.')
-    LB.add_insecure_port('0.0.0.0:50051')
-    LB.start()
+    threads = []
+    thread = threading.Thread(target=grpc_LoadBalancerServer.LoadBalancerServicer.start, args=(servers_num,))
+    thread.start()
+    threads.append(thread)
 
     randomList = []
     clients = []
@@ -95,7 +88,6 @@ def main():
 
     for thread in threads:
         thread.join()
-    LB.stop(0)
     for server in servers:
         server.stop(0)
 
