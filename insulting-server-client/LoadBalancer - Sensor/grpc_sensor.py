@@ -47,7 +47,7 @@ class Sensor:
         )
 
         SensorPollutionData.RawPollutionData.co2 = pollution['co2']
-        SensorPollutionData.RawPollutionData.timestamp=timestamp
+        SensorPollutionData.RawPollutionData.timestamp = timestamp
 
         print(f"Sensor {SensorPollutionData.id} sending Pollution Data at {SensorPollutionData.RawPollutionData.timestamp}")
         self.stub.sendPollutionData(SensorPollutionData)
