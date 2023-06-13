@@ -10,7 +10,6 @@ class terminal_service():
 
     def send_results(self, pollutionData, wellnessData, id_terminal):
         fig, (ax_pollution, ax_wellness) = plt.subplots(2, 1, figsize=(8, 6))
-
         for x in pollutionData:
             id = x.id
             if id not in self.data_points_pollution:
