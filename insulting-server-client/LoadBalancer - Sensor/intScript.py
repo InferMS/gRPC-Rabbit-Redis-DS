@@ -1,11 +1,16 @@
 import getopt
+import pickle
 import random
 import signal
 import sys
 import threading
 import time
 import grpc
+from google.protobuf.timestamp_pb2 import Timestamp
 from concurrent import futures
+
+import redis
+
 import grpc_sensor
 import grpc_server
 import sensorLoadBalancer_pb2
@@ -36,9 +41,18 @@ def main():
         elif opt in ['-s', '--servers']:
             servers_num = arg
 
+    r = redis.Redis(host='localhost', port=6379)
+    pollution = dict()
+    wellness = dict()
+
+    pollution_bytes = pickle.dumps(pollution)
+    wellness_bytes = pickle.dumps(wellness)
+
+    r.set('pollution', pollution_bytes)
+    r.set('wellness', wellness_bytes)
+
     servers = []
     for index in range(int(servers_num)):
-        print(f"Este: {index}")
         servers.append(grpc.server(futures.ThreadPoolExecutor(max_workers=10)))
         loadBalancerServer_pb2_grpc.add_ServerServicer_to_server(
             grpc_server.ServerServicer(),
@@ -76,7 +90,6 @@ def main():
 
     threads = []
     for client in clients:
-        print(f"Creating thread for sensor {client.sensorId}")
         thread = threading.Thread(target=client.start)
         thread.start()
         threads.append(thread)

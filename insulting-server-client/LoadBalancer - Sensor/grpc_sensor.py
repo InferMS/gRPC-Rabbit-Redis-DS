@@ -37,7 +37,6 @@ class Sensor:
         SensorMeteoData.RawMeteoData.humidity=air['humidity']
         SensorMeteoData.RawMeteoData.timestamp=timestamp
 
-        print(f"Sensor {SensorMeteoData.id} sending Meteo Data at {SensorMeteoData.RawMeteoData.timestamp}")
         self.stub.sendMeteoData(SensorMeteoData)
 
     def __sendPollutionData(self, detector, timestamp):
@@ -49,7 +48,6 @@ class Sensor:
         SensorPollutionData.RawPollutionData.co2 = pollution['co2']
         SensorPollutionData.RawPollutionData.timestamp = timestamp
 
-        print(f"Sensor {SensorPollutionData.id} sending Pollution Data at {SensorPollutionData.RawPollutionData.timestamp}")
         self.stub.sendPollutionData(SensorPollutionData)
 
     def start(self):
