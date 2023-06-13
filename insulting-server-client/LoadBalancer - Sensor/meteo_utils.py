@@ -68,6 +68,7 @@ class MeteoDataDetector:
         """
         return round(random.uniform(self.min_temperature, self.max_temperature), 2)
 
+
     def gen_temperature(self):
         """
         Returns a random temperature value within the detectors range.
