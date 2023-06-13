@@ -1,9 +1,13 @@
 import getopt
 import sys
-import threading
-import time
 import grpc_terminal, grpc_proxy
+import matplotlib
+matplotlib.use('TkAgg')
+import multiprocessing
+import time
+
 def main():
+
     servers_num = 2
     terminals = 2
 
@@ -19,16 +23,17 @@ def main():
         elif opt in ['-t', '--terminals']:
             terminals = arg
 
-    threads = []
+    processes = []
+
 
     for index in range(int(terminals)):
-        thread = threading.Thread(target=grpc_terminal.send_resultsServicer.run_server, args=(terminals, servers_num, int(index + 1),))
-        thread.start()
-        threads.append(thread)
+        process = multiprocessing.Process(target=grpc_terminal.send_resultsServicer.run_server, args=(terminals, servers_num, index + 1,))
+        process.start()
+        processes.append(process)
 
-    thread = threading.Thread(target=grpc_proxy.run_client, args=(terminals, servers_num,))
-    thread.start()
-    threads.append(thread)
+    process = multiprocessing.Process(target=grpc_proxy.run_client, args=(terminals, servers_num,))
+    process.start()
+    processes.append(process)
 
     try:
         while True:
@@ -36,7 +41,10 @@ def main():
     except KeyboardInterrupt:
         pass
 
-    for thread in threads:
-        thread.join()
+    for process in processes:
+        process.terminate()
+        process.join()
 
-main()
+if __name__ == '__main__':
+    multiprocessing.freeze_support()
+    main()
