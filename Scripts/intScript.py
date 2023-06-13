@@ -1,3 +1,4 @@
+import getopt
 import pickle
 import random
 import signal
@@ -15,6 +16,8 @@ import grpc_server
 import sensorLoadBalancer_pb2
 import grpc_LoadBalancerServer
 import sensorLoadBalancer_pb2_grpc
+import grpc_proxy
+import grpc_terminal
 
 import loadBalancerServer_pb2_grpc
 import loadBalancerServer_pb2
@@ -32,7 +35,7 @@ def main():
                                ["pollution_sensor=",
                                 "quality_sensor=",
                                 "servers=",
-                               "terminals="])
+                                "terminals="])
 
     for opt, arg in opts:
         if opt in ['-p', '--pollution_sensor']:
@@ -61,7 +64,7 @@ def main():
             grpc_server.ServerServicer(),
             servers[-1]
         )
-        servers[-1].add_insecure_port(f"0.0.0.0:{50051+index+1}")
+        servers[-1].add_insecure_port(f"0.0.0.0:{50051 + index + 1}")
         servers[-1].start()
     time.sleep(2)
 
@@ -95,16 +98,18 @@ def main():
         thread = threading.Thread(target=client.start)
         thread.start()
         threads.append(thread)
-        
+
     for index in range(int(terminals)):
-        thread = threading.Thread(target=grpc_terminal.send_resultsServicer.run_server, args=(terminals, servers_num, int(index + 1),))
+        thread = threading.Thread(target=grpc_terminal.send_resultsServicer.run_server,
+                                  args=(terminals, servers_num, int(index + 1),))
         thread.start()
         threads.append(thread)
+    time.sleep(2)
 
     thread = threading.Thread(target=grpc_proxy.run_client, args=(terminals, servers_num,))
     thread.start()
     threads.append(thread)
-        
+
     try:
         while True:
             time.sleep(86400)
@@ -115,4 +120,5 @@ def main():
         thread.join()
     for server in servers:
         server.stop(0)
+
 main()

@@ -52,8 +52,3 @@ class ServerServicer(loadBalancerServer_pb2_grpc.ServerServicer):
         self.r.set('pollution', pollution_bytes)
         response = loadBalancerServer_pb2.google_dot_protobuf_dot_empty__pb2.Empty()
         return response
-
-
-
-#Primera key = Pollution
-    #Key interna ID

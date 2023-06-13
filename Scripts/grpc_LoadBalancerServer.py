@@ -24,6 +24,7 @@ class LoadBalancerServicer(sensorLoadBalancer_pb2_grpc.LoadBalancerServicer):
         self.stubs = []
         for index in range(int(servers_num)):
             channel = grpc.insecure_channel(f"localhost:{50051+index+1}")
+            print(f"LB con server{50051+index+1}")
             self.stubs.append(loadBalancerServer_pb2_grpc.ServerStub(channel))
 
 
