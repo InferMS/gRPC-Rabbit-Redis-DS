@@ -10,7 +10,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from concurrent import futures
 
 import redis
-
+import multiprocessing
 import grpc_sensor
 import grpc_server
 import sensorLoadBalancer_pb2
@@ -99,16 +99,17 @@ def main():
         thread.start()
         threads.append(thread)
 
-    for index in range(int(terminals)):
-        thread = threading.Thread(target=grpc_terminal.send_resultsServicer.run_server,
-                                  args=(terminals, servers_num, int(index + 1),))
-        thread.start()
-        threads.append(thread)
-    time.sleep(2)
+    processes = []
 
-    thread = threading.Thread(target=grpc_proxy.run_client, args=(terminals, servers_num,))
-    thread.start()
-    threads.append(thread)
+    for index in range(int(terminals)):
+        process = multiprocessing.Process(target=grpc_terminal.send_resultsServicer.run_server,
+                                          args=(terminals, servers_num, index + 1,))
+        process.start()
+        processes.append(process)
+
+    process = multiprocessing.Process(target=grpc_proxy.run_client, args=(terminals, servers_num,))
+    process.start()
+    processes.append(process)
 
     try:
         while True:
@@ -116,9 +117,16 @@ def main():
     except KeyboardInterrupt:
         pass
 
+    for process in processes:
+        process.terminate()
+        process.join()
     for thread in threads:
         thread.join()
     for server in servers:
         server.stop(0)
 
 main()
+
+if __name__ == '__main__':
+    multiprocessing.freeze_support()
+    main()
