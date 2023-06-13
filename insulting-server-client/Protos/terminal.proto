@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+message pollutionData {
+  int32 id=1;
+  google.protobuf.Timestamp timestamp=2;
+  float coefficient=3;
+}
+
+message wellnessData {
+  int32 id=1;
+  google.protobuf.Timestamp timestamp=2;
+  float coefficient=3;
+}
+
+message airData {
+  repeated pollutionData pollution=1;
+  repeated wellnessData wellness=2;
+}
+
+service send_results {
+  rpc send_results (airData) returns (google.protobuf.Empty) {}
+}

@@ -61,6 +61,13 @@ class MeteoDataDetector:
         humidity_range = [random.uniform(MIN_HUMIDITY, MAX_HUMIDITY) for _ in range(2)]
         self.min_humidity = min(humidity_range)
         self.max_humidity = max(humidity_range)
+    def send_data(self):
+        """
+        Returns a random temperature value within the detectors range.
+        :return: a temperature value.
+        """
+        return round(random.uniform(self.min_temperature, self.max_temperature), 2)
+
 
     def gen_temperature(self):
         """

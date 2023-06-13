@@ -1,4 +1,3 @@
-import getopt
 import pickle
 import random
 import signal
@@ -25,13 +24,15 @@ def main():
     pollutionSensors = 1
     qualitySensors = 1
     servers_num = 2
+    terminals = 2
 
     argv = sys.argv[1:]
 
-    opts, args = getopt.getopt(argv, "p:q:s:",
+    opts, args = getopt.getopt(argv, "p:q:s:t:",
                                ["pollution_sensor=",
                                 "quality_sensor=",
-                                "servers="])
+                                "servers=",
+                               "terminals="])
 
     for opt, arg in opts:
         if opt in ['-p', '--pollution_sensor']:
@@ -40,6 +41,8 @@ def main():
             qualitySensors = arg
         elif opt in ['-s', '--servers']:
             servers_num = arg
+        elif opt in ['-t', '--terminals']:
+            terminals = arg
 
     r = redis.Redis(host='localhost', port=6379)
     pollution = dict()
@@ -88,11 +91,20 @@ def main():
                 clients.append(grpc_sensor.Sensor(sensorId=sensorId, sensorType=1))
                 success = True
 
-    threads = []
     for client in clients:
         thread = threading.Thread(target=client.start)
         thread.start()
         threads.append(thread)
+        
+    for index in range(int(terminals)):
+        thread = threading.Thread(target=grpc_terminal.send_resultsServicer.run_server, args=(terminals, servers_num, int(index + 1),))
+        thread.start()
+        threads.append(thread)
+
+    thread = threading.Thread(target=grpc_proxy.run_client, args=(terminals, servers_num,))
+    thread.start()
+    threads.append(thread)
+        
     try:
         while True:
             time.sleep(86400)
@@ -103,6 +115,4 @@ def main():
         thread.join()
     for server in servers:
         server.stop(0)
-
-
 main()
