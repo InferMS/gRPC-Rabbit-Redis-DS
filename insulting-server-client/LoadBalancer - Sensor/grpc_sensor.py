@@ -52,5 +52,5 @@ class Sensor:
 
     def start(self):
         while True:
-            time.sleep(5)
             self.sendData()
+            time.sleep(1)

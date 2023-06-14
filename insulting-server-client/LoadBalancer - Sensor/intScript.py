@@ -1,3 +1,4 @@
+import getopt
 import pickle
 import random
 import signal
@@ -12,6 +13,8 @@ import redis
 
 import grpc_sensor
 import grpc_server
+import grpc_proxy
+import grpc_terminal
 import sensorLoadBalancer_pb2
 import grpc_LoadBalancerServer
 import sensorLoadBalancer_pb2_grpc
@@ -95,7 +98,8 @@ def main():
         thread = threading.Thread(target=client.start)
         thread.start()
         threads.append(thread)
-        
+
+    time.sleep(3)
     for index in range(int(terminals)):
         thread = threading.Thread(target=grpc_terminal.send_resultsServicer.run_server, args=(terminals, servers_num, int(index + 1),))
         thread.start()

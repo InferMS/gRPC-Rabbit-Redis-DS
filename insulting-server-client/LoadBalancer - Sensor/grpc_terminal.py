@@ -12,9 +12,7 @@ class send_resultsServicer(terminal_pb2_grpc.send_resultsServicer):
         self.id_terminal = id_terminal
         self.servers = servers
         self.stubs = []
-        for index in range(int(servers)):
-            channel = grpc.insecure_channel(f"localhost:{int(50051 + int(servers) + int(id_terminal) + 1)}")
-            self.stubs.append(terminal_pb2_grpc.send_resultsStub(channel))
+
 
     def send_results(self, airData, context):
         terminal_service.send_results(airData.pollution,airData.wellness,self.id_terminal)
@@ -31,8 +29,8 @@ class send_resultsServicer(terminal_pb2_grpc.send_resultsServicer):
             send_resultsServicer(servers, id_terminal), server)
 
         # listen on port 50051
-        print(f'Starting server. Listening on port {int(50051 + int(servers) + int(id_terminal) + 1)}')
-        server.add_insecure_port(f'0.0.0.0:{50051 + int(servers) + int(id_terminal) + 1}')
+        print(f'Starting server. Listening on port {int(50051 + int(servers) + int(id_terminal)+1)}')
+        server.add_insecure_port(f'0.0.0.0:{50051 + int(servers) + int(id_terminal)+1}')
         server.start()
 
         # since server.start() will not block,

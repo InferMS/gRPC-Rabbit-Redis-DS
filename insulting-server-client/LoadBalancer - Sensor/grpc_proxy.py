@@ -65,7 +65,7 @@ def run_client(terminals,servers):
                 if p_last.get(y['id']) == None:
                     p1.append(terminal_pb2.pollutionData(id=y['id'], timestamp=y['timer_seconds'], coefficient=float(y['value'])))
                 else:
-                    if y['timer_seconds'].seconds == timestamp and (p_last.get(y['id'])['id'] != y['id'] and p_last.get(y['id'])['timer_seconds'].seconds != (y['timer_seconds'].seconds - timesleep) and p_last.get(y['id'])['value'] != y['value']):
+                    if y['timer_seconds'].seconds == timestamp and (p_last.get(y['id'])['timer_seconds'].seconds != (y['timer_seconds'].seconds - timesleep) and p_last.get(y['id'])['value'] != y['value']):
                         p1.append(terminal_pb2.pollutionData(id=y['id'], timestamp=y['timer_seconds'], coefficient=float(y['value'])))
                 p_last[y['id']] = y
 
@@ -76,7 +76,7 @@ def run_client(terminals,servers):
                 if w_last.get(y['id']) == None:
                     w1.append(terminal_pb2.wellnessData(id=y['id'], timestamp=y['timer_seconds'], coefficient=float(y['value'])))
                 else:
-                    if y['timer_seconds'].seconds == timestamp and (w_last.get(y['id'])['id'] != y['id'] and w_last.get(y['id'])['timer_seconds'].seconds != (y['timer_seconds'].seconds - timesleep) and w_last.get(y['id'])['value'] != y['value']):
+                    if y['timer_seconds'].seconds == timestamp and (w_last.get(y['id'])['timer_seconds'].seconds != (y['timer_seconds'].seconds - timesleep) and w_last.get(y['id'])['value'] != y['value']):
                         w1.append(terminal_pb2.wellnessData(id=y['id'], timestamp=y['timer_seconds'], coefficient=float(y['value'])))
                 w_last[y['id']] = y
 
@@ -86,7 +86,7 @@ def run_client(terminals,servers):
             data = terminal_pb2.airData(pollution=p1, wellness=w1)
             x.send_results(data)
 
-        time.sleep(timesleep)
+        # time.sleep(timesleep)
         timestamp += 1
 
 if __name__ == '__main__':
