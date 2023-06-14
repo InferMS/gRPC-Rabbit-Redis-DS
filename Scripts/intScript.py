@@ -4,6 +4,7 @@ import random
 import sys
 import threading
 import time
+import multiprocessing
 import grpc
 from concurrent import futures
 import redis
@@ -52,6 +53,7 @@ def main():
     r.set('wellness', wellness_bytes)
 
     threads = []
+    processes = []
 
     servers = []
     for index in range(int(servers_num)):
@@ -100,11 +102,10 @@ def main():
     time.sleep(2)
 
     for index in range(int(terminals)):
-        thread = threading.Thread(
-            target=grpc_terminal.send_resultsServicer.run_server,
-            args=(terminals, servers_num, int(index + 1),))
-        thread.start()
-        threads.append(thread)
+        process = multiprocessing.Process(target=grpc_terminal.send_resultsServicer.run_server,
+                                          args=(terminals, servers_num, index + 1,))
+        process.start()
+        processes.append(process)
 
     thread = threading.Thread(
         target=grpc_proxy.run_client,
@@ -122,6 +123,11 @@ def main():
         thread.join()
     for server in servers:
         server.stop(0)
+    for process in processes:
+        process.terminate()
+        process.join()
 
+if __name__ == '__main__':
+    multiprocessing.freeze_support()
+    main()
 
-main()
