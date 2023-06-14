@@ -1,3 +1,8 @@
+import time
+
+import grpc
+from concurrent import futures
+
 import loadBalancerServer_pb2_grpc
 import loadBalancerServer_pb2
 import meteo_utils
@@ -52,3 +57,20 @@ class ServerServicer(loadBalancerServer_pb2_grpc.ServerServicer):
         self.r.set('pollution', pollution_bytes)
         response = loadBalancerServer_pb2.google_dot_protobuf_dot_empty__pb2.Empty()
         return response
+
+    def start(index):
+        server = (grpc.server(futures.ThreadPoolExecutor(max_workers=10)))
+        loadBalancerServer_pb2_grpc.add_ServerServicer_to_server(
+            ServerServicer(),
+            server
+        )
+        print(f"me bindeo a {50051 + index + 1}")
+        server.add_insecure_port(f"0.0.0.0:{50051 + index + 1}")
+        server.start()
+
+        try:
+            while True:
+                time.sleep(86400)
+        except KeyboardInterrupt:
+            pass
+        server.stop(0)

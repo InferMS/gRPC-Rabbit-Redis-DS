@@ -29,7 +29,7 @@ def main():
                                ["pollution_sensor=",
                                 "quality_sensor=",
                                 "servers=",
-                               "terminals="])
+                                "terminals="])
 
     for opt, arg in opts:
         if opt in ['-p', '--pollution_sensor']:
@@ -51,17 +51,16 @@ def main():
     r.set('pollution', pollution_bytes)
     r.set('wellness', wellness_bytes)
 
+    threads = []
+
     servers = []
     for index in range(int(servers_num)):
-        servers.append(grpc.server(futures.ThreadPoolExecutor(max_workers=10)))
-        loadBalancerServer_pb2_grpc.add_ServerServicer_to_server(
-            grpc_server.ServerServicer(),
-            servers[-1]
-        )
-        servers[-1].add_insecure_port(f"0.0.0.0:{50051+index+1}")
-        servers[-1].start()
+        thread = threading.Thread(
+            target=grpc_server.ServerServicer.start,
+            args=(index,))
+        thread.start()
+        threads.append(thread)
 
-    threads = []
     thread = threading.Thread(
         target=grpc_LoadBalancerServer.LoadBalancerServicer.start,
         args=(servers_num,))
@@ -70,6 +69,7 @@ def main():
 
     randomList = []
     clients = []
+    print("llugu")
 
     for index in range(int(qualitySensors)):
         success = False
@@ -77,9 +77,11 @@ def main():
             sensorId = random.randint(1, 999)
             if sensorId not in randomList:
                 randomList.append(sensorId)
-                clients.append(grpc_sensor.Sensor(
-                    sensorId=sensorId,
-                    sensorType=0))
+                thread = threading.Thread(
+                    target=grpc_sensor.sendMeteoData,
+                    args=(sensorId,))
+                thread.start()
+                threads.append(thread)
                 success = True
 
     for index in range(int(pollutionSensors)):
@@ -88,17 +90,13 @@ def main():
             sensorId = random.randint(1, 999)
             if sensorId not in randomList:
                 randomList.append(sensorId)
-                clients.append(grpc_sensor.Sensor(
-                    sensorId=sensorId,
-                    sensorType=1))
+                thread = threading.Thread(
+                    target=grpc_sensor.sendPollutionData,
+                    args=(sensorId,))
+                thread.start()
+                threads.append(thread)
                 success = True
-
-    for client in clients:
-        thread = threading.Thread(
-            target=client.start)
-        thread.start()
-        threads.append(thread)
-
+    print("llego")
     time.sleep(2)
 
     for index in range(int(terminals)):
@@ -113,7 +111,7 @@ def main():
         args=(terminals, servers_num,))
     thread.start()
     threads.append(thread)
-        
+
     try:
         while True:
             time.sleep(86400)
@@ -124,4 +122,6 @@ def main():
         thread.join()
     for server in servers:
         server.stop(0)
+
+
 main()

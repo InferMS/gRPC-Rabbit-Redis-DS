@@ -8,48 +8,43 @@ import sensorLoadBalancer_pb2
 import sensorLoadBalancer_pb2_grpc
 from google.protobuf.timestamp_pb2 import Timestamp
 
-class Sensor:
-    def __init__(self, sensorId, sensorType):
-        self.sensorId = sensorId
-        self.sensorType = sensorType
-        channel = grpc.insecure_channel('localhost:50051')
-        self.stub = sensorLoadBalancer_pb2_grpc.LoadBalancerStub(channel)
 
-    def sendData(self):
-        timestamp = Timestamp()
-        timestamp.GetCurrentTime()
-        detector = meteo_utils.MeteoDataDetector()
-        # MeteoData
-        if self.sensorType == 0:
-            self.__sendMeteoData(detector, timestamp)
-        # PollutionData
-        if self.sensorType == 1:
-            self.__sendPollutionData(detector, timestamp)
-
-    def __sendMeteoData(self, detector, timestamp):
+def sendMeteoData(sensorId):
+    timestamp = Timestamp()
+    timestamp.GetCurrentTime()
+    detector = meteo_utils.MeteoDataDetector()
+    channel = grpc.insecure_channel('localhost:50051')
+    stub = sensorLoadBalancer_pb2_grpc.LoadBalancerStub(channel)
+    while True:
         air = detector.analyze_air()
         SensorMeteoData = sensorLoadBalancer_pb2.SensorMeteoData(
-            id=self.sensorId
+            id=sensorId
         )
 
-        SensorMeteoData.RawMeteoData.temperature=air['temperature']
-        SensorMeteoData.RawMeteoData.humidity=air['humidity']
-        SensorMeteoData.RawMeteoData.timestamp=timestamp
+        SensorMeteoData.RawMeteoData.temperature = air['temperature']
+        SensorMeteoData.RawMeteoData.humidity = air['humidity']
+        SensorMeteoData.RawMeteoData.timestamp = timestamp
 
-        self.stub.sendMeteoData(SensorMeteoData)
+        stub.sendMeteoData(SensorMeteoData)
 
-    def __sendPollutionData(self, detector, timestamp):
+        time.sleep(1)
+
+
+def sendPollutionData(sensorId):
+    print("ey q tal")
+    timestamp = Timestamp()
+    timestamp.GetCurrentTime()
+    detector = meteo_utils.MeteoDataDetector()
+    channel = grpc.insecure_channel('localhost:50051')
+    stub = sensorLoadBalancer_pb2_grpc.LoadBalancerStub(channel)
+    while True:
         pollution = detector.analyze_pollution()
         SensorPollutionData = sensorLoadBalancer_pb2.SensorPollutionData(
-            id=self.sensorId,
+            id=sensorId,
         )
 
         SensorPollutionData.RawPollutionData.co2 = pollution['co2']
         SensorPollutionData.RawPollutionData.timestamp = timestamp
 
-        self.stub.sendPollutionData(SensorPollutionData)
-
-    def start(self):
-        while True:
-            self.sendData()
-            time.sleep(1)
+        stub.sendPollutionData(SensorPollutionData)
+        time.sleep(1)
