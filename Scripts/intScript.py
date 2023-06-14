@@ -1,26 +1,20 @@
 import getopt
 import pickle
 import random
-import signal
 import sys
 import threading
 import time
 import grpc
-from google.protobuf.timestamp_pb2 import Timestamp
 from concurrent import futures
-
 import redis
 
 import grpc_sensor
 import grpc_server
 import grpc_proxy
 import grpc_terminal
-import sensorLoadBalancer_pb2
 import grpc_LoadBalancerServer
-import sensorLoadBalancer_pb2_grpc
 
 import loadBalancerServer_pb2_grpc
-import loadBalancerServer_pb2
 
 
 def main():
@@ -66,10 +60,11 @@ def main():
         )
         servers[-1].add_insecure_port(f"0.0.0.0:{50051+index+1}")
         servers[-1].start()
-    time.sleep(2)
 
     threads = []
-    thread = threading.Thread(target=grpc_LoadBalancerServer.LoadBalancerServicer.start, args=(servers_num,))
+    thread = threading.Thread(
+        target=grpc_LoadBalancerServer.LoadBalancerServicer.start,
+        args=(servers_num,))
     thread.start()
     threads.append(thread)
 
@@ -82,7 +77,9 @@ def main():
             sensorId = random.randint(1, 999)
             if sensorId not in randomList:
                 randomList.append(sensorId)
-                clients.append(grpc_sensor.Sensor(sensorId=sensorId, sensorType=0))
+                clients.append(grpc_sensor.Sensor(
+                    sensorId=sensorId,
+                    sensorType=0))
                 success = True
 
     for index in range(int(pollutionSensors)):
@@ -91,21 +88,29 @@ def main():
             sensorId = random.randint(1, 999)
             if sensorId not in randomList:
                 randomList.append(sensorId)
-                clients.append(grpc_sensor.Sensor(sensorId=sensorId, sensorType=1))
+                clients.append(grpc_sensor.Sensor(
+                    sensorId=sensorId,
+                    sensorType=1))
                 success = True
 
     for client in clients:
-        thread = threading.Thread(target=client.start)
+        thread = threading.Thread(
+            target=client.start)
         thread.start()
         threads.append(thread)
 
-    time.sleep(3)
+    time.sleep(2)
+
     for index in range(int(terminals)):
-        thread = threading.Thread(target=grpc_terminal.send_resultsServicer.run_server, args=(terminals, servers_num, int(index + 1),))
+        thread = threading.Thread(
+            target=grpc_terminal.send_resultsServicer.run_server,
+            args=(terminals, servers_num, int(index + 1),))
         thread.start()
         threads.append(thread)
 
-    thread = threading.Thread(target=grpc_proxy.run_client, args=(terminals, servers_num,))
+    thread = threading.Thread(
+        target=grpc_proxy.run_client,
+        args=(terminals, servers_num,))
     thread.start()
     threads.append(thread)
         

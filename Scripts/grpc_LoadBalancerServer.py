@@ -8,7 +8,6 @@ import sensorLoadBalancer_pb2_grpc
 import loadBalancerServer_pb2_grpc
 import loadBalancerServer_pb2
 import queue
-from google.protobuf.timestamp_pb2 import Timestamp
 
 
 # import the original insultingServer.py
