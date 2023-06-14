@@ -1,4 +1,4 @@
-import pickle, redis, grpc, time
+import pickle, redis, grpc
 import terminal_pb2, terminal_pb2_grpc
 from google.protobuf.timestamp_pb2 import Timestamp
 
@@ -85,7 +85,7 @@ def run_client(terminals,servers):
             data = terminal_pb2.airData(pollution=p1, wellness=w1)
             x.send_results(data)
 
-        time.sleep(timesleep)
+        # time.sleep(timesleep)
         timestamp += 1
 
 if __name__ == '__main__':
