@@ -21,6 +21,7 @@ class terminal_service():
         for x in pollutionData:
             id = x.id
             if id not in self.data_points_pollution:
+                self.first = True
                 self.data_points_pollution[id] = {'timestamps': [], 'coefficients': []}
             if x.timestamp in self.data_points_pollution[id]['timestamps']:
                 index = self.data_points_pollution[id]['timestamps'].index(x.timestamp)
@@ -28,6 +29,8 @@ class terminal_service():
                 continue  # Si el timestamp ya ha sido registrado para este ID, pasar al siguiente dato
             self.data_points_pollution[id]['timestamps'].append(x.timestamp)  # Almacenar el timestamp
             self.data_points_pollution[id]['coefficients'].append(x.coefficient)  # Almacenar el coeficiente
+        if self.first==True:
+            self.ax_pollution.clear()
         for id, data in self.data_points_pollution.items():
             timestamps = [ts.seconds for ts in data['timestamps']]
             color = self.get_color(id)  # Obtener el color correspondiente al ID
@@ -35,7 +38,9 @@ class terminal_service():
                                    label=f'ID {id}',
                                    color=color)  # Graficar los puntos y asignar etiqueta y color a cada línea
 
+
         if self.first == True:
+
             self.ax_pollution.set_title(f'Pollution, Terminal:{id_terminal}', loc="left",
                                         fontdict={'fontsize': 14, 'fontweight': 'bold', 'color': 'tab:blue'})
             self.ax_pollution.legend()  # Mostrar leyenda con las etiquetas de las líneas
@@ -44,6 +49,7 @@ class terminal_service():
         for x in wellnessData:
             id = x.id
             if id not in self.data_points_wellness:
+                self.first = True
                 self.data_points_wellness[id] = {'timestamps': [], 'coefficients': []}
             if x.timestamp in self.data_points_wellness[id]['timestamps']:
                 index = self.data_points_wellness[id]['timestamps'].index(x.timestamp)
@@ -52,6 +58,8 @@ class terminal_service():
             self.data_points_wellness[id]['timestamps'].append(x.timestamp)  # Almacenar el timestamp
             self.data_points_wellness[id]['coefficients'].append(x.coefficient)  # Almacenar el coeficiente
 
+        if self.first==True:
+            self.ax_wellness.clear()
         for id, data in self.data_points_wellness.items():
             timestamps = [ts.seconds for ts in data['timestamps']]
             color = self.get_color(id)  # Obtener el color correspondiente al ID
@@ -59,6 +67,7 @@ class terminal_service():
                                   label=f'ID {id}',
                                   color=color)  # Graficar los puntos y asignar etiqueta y color a cada línea
         if self.first == True:
+
             self.ax_wellness.set_title(f'Wellness, Terminal:{id_terminal}', loc="left",
                                        fontdict={'fontsize': 14, 'fontweight': 'bold', 'color': 'tab:blue'})
             self.ax_wellness.legend()  # Mostrar leyenda con las etiquetas de las líneas
