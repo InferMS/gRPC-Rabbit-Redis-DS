@@ -23,7 +23,6 @@ class LoadBalancerServicer(sensorLoadBalancer_pb2_grpc.LoadBalancerServicer):
         self.stubs = []
         for index in range(int(servers_num)):
             channel = grpc.insecure_channel(f"localhost:{50051+index+1}")
-            print(f"LB con server{50051+index+1}")
             self.stubs.append(loadBalancerServer_pb2_grpc.ServerStub(channel))
 
 
@@ -69,7 +68,6 @@ class LoadBalancerServicer(sensorLoadBalancer_pb2_grpc.LoadBalancerServicer):
             LoadBalancerServicer(servers_num), LB)
 
         # listen on port 50051
-        print('Starting LB. Listening on port 50051.')
         LB.add_insecure_port('0.0.0.0:50051')
         LB.start()
 

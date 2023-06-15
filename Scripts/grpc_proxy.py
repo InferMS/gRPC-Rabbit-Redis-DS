@@ -2,10 +2,7 @@ import pickle, redis, grpc
 import terminal_pb2, terminal_pb2_grpc
 from google.protobuf.timestamp_pb2 import Timestamp
 
-'''# open a gRPC channel
-channel = grpc.insecure_channel('localhost:50051')
-# create a stub (client)
-stub = terminal_pb2_grpc.send_resultsStub(channel)'''
+
 # creat a stub (redis)
 r = redis.Redis(host='localhost', port=6379, decode_responses=False)
 
@@ -48,7 +45,6 @@ def run_client(terminals,servers):
     # Configurar la conexión con el servidor
     stubs = []
     for index in range(int(terminals)):
-        print(50051 + int(servers) + int(index) + 1)
         channel = grpc.insecure_channel(f'localhost:{50051 + int(servers) + int(index) + 1}')
         stubs.append(terminal_pb2_grpc.send_resultsStub(channel))
 

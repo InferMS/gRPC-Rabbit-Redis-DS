@@ -31,7 +31,6 @@ def sendMeteoData(sensorId):
 
 
 def sendPollutionData(sensorId):
-    print("ey q tal")
     timestamp = Timestamp()
     timestamp.GetCurrentTime()
     detector = meteo_utils.MeteoDataDetector()

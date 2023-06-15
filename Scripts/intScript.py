@@ -71,7 +71,6 @@ def main():
 
     randomList = []
     clients = []
-    print("llugu")
 
     for index in range(int(qualitySensors)):
         success = False
@@ -98,7 +97,6 @@ def main():
                 thread.start()
                 threads.append(thread)
                 success = True
-    print("llego")
     time.sleep(2)
 
     for index in range(int(terminals)):

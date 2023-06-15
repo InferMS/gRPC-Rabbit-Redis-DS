@@ -64,7 +64,6 @@ class ServerServicer(loadBalancerServer_pb2_grpc.ServerServicer):
             ServerServicer(),
             server
         )
-        print(f"me bindeo a {50051 + index + 1}")
         server.add_insecure_port(f"0.0.0.0:{50051 + index + 1}")
         server.start()
 

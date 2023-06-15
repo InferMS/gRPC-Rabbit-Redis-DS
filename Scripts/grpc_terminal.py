@@ -29,7 +29,6 @@ class send_resultsServicer(terminal_pb2_grpc.send_resultsServicer):
             send_resultsServicer(servers, id_terminal), server)
 
         # listen on port 50051
-        print(f'Starting server. Listening on port {int(50051 + int(servers) + int(id_terminal))}')
         server.add_insecure_port(f'0.0.0.0:{50051 + int(servers) + int(id_terminal)}')
         server.start()
 
