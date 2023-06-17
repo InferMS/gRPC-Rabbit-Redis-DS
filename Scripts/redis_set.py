@@ -21,16 +21,12 @@ data2 = {"id": 111, "timer_seconds": pickled_object, "value": 1.5}
 w111.append(data2)
 wellness[111] = w111
 
-#pollution = {str(key): value for key, value in pollution.items()}
-#wellness = {str(key): value for key, value in wellness.items()}
 
-# Guardar los bytes en Redis
 pollution_bytes = pickle.dumps(pollution)
 wellness_bytes = pickle.dumps(wellness)
 
 r.execute_command('SET', 'pollution', pollution_bytes)
 r.execute_command('SET', 'wellness', wellness_bytes)
-#r.set('pollution',pollution)
 
 data3 = {"id": 111, "timer_seconds": pickled_object, "value": 23.5}
 data3_bytes = pickle.dumps(data3)
