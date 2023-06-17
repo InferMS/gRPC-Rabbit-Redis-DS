@@ -11,11 +11,12 @@ from google.protobuf.timestamp_pb2 import Timestamp
 
 def sendMeteoData(sensorId):
     timestamp = Timestamp()
-    timestamp.GetCurrentTime()
+
     detector = meteo_utils.MeteoDataDetector()
     channel = grpc.insecure_channel('localhost:50051')
     stub = sensorLoadBalancer_pb2_grpc.LoadBalancerStub(channel)
     while True:
+        timestamp.GetCurrentTime()
         air = detector.analyze_air()
         SensorMeteoData = sensorLoadBalancer_pb2.SensorMeteoData(
             id=sensorId
@@ -32,11 +33,13 @@ def sendMeteoData(sensorId):
 
 def sendPollutionData(sensorId):
     timestamp = Timestamp()
-    timestamp.GetCurrentTime()
+
     detector = meteo_utils.MeteoDataDetector()
     channel = grpc.insecure_channel('localhost:50051')
     stub = sensorLoadBalancer_pb2_grpc.LoadBalancerStub(channel)
     while True:
+        timestamp.GetCurrentTime()
+
         pollution = detector.analyze_pollution()
         SensorPollutionData = sensorLoadBalancer_pb2.SensorPollutionData(
             id=sensorId,
