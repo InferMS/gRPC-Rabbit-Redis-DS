@@ -22,10 +22,10 @@ def generate_pollution_data():
     timer.GetCurrentTime()
     pollution_bytes = r.get("pollution".encode())
     pollution_dict = pickle.loads(pollution_bytes)
-    for x in pollution_dict.keys():
-        for y in pollution_dict[x]:
-            z = pickle.loads(y["timer_seconds"])
-            y["timer_seconds"] = z
+    for id in pollution_dict.keys():
+        for pollution_data in pollution_dict[id]:
+            timer_deserialized = pickle.loads(pollution_data["timer_seconds"])
+            pollution_data["timer_seconds"] = timer_deserialized
     return pollution_dict
 
 
@@ -34,10 +34,10 @@ def generate_wellness_data():
     timer.GetCurrentTime()
     wellness_bytes = r.get("wellness".encode())
     wellness_dict = pickle.loads(wellness_bytes)
-    for x in wellness_dict.keys():
-        for y in wellness_dict[x]:
-            z = pickle.loads(y["timer_seconds"])
-            y["timer_seconds"] = z
+    for id in wellness_dict.keys():
+        for wellness_data in wellness_dict[id]:
+            timer_deserialized = pickle.loads(wellness_data["timer_seconds"])
+            wellness_data["timer_seconds"] = timer_deserialized
     return wellness_dict
 
 def run_client(terminals,servers):
@@ -55,27 +55,27 @@ def run_client(terminals,servers):
         p1 = []
         w1 = []
 
-        for x in pollution_dict.keys():
-            for y in pollution_dict[x]:
+        for id in pollution_dict.keys():
+            for pollution_data in pollution_dict[id]:
                 timer = create_timestamp(timestamp)
-                y['timer_seconds'] = timer
-                if p_last.get(y['id']) == None:
-                    p1.append(terminal_pb2.pollutionData(id=y['id'], timestamp=y['timer_seconds'], coefficient=float(y['value'])))
+                pollution_data['timer_seconds'] = timer
+                if p_last.get(pollution_data['id']) == None:
+                    p1.append(terminal_pb2.pollutionData(id=pollution_data['id'], timestamp=pollution_data['timer_seconds'], coefficient=float(pollution_data['value'])))
                 else:
-                    if y['timer_seconds'].seconds == timestamp and (p_last.get(y['id'])['timer_seconds'].seconds != (y['timer_seconds'].seconds - timesleep) and p_last.get(y['id'])['value'] != y['value']):
-                        p1.append(terminal_pb2.pollutionData(id=y['id'], timestamp=y['timer_seconds'], coefficient=float(y['value'])))
-                p_last[y['id']] = y
+                    if pollution_data['timer_seconds'].seconds == timestamp and (p_last.get(pollution_data['id'])['timer_seconds'].seconds != (pollution_data['timer_seconds'].seconds - timesleep) and p_last.get(pollution_data['id'])['value'] != pollution_data['value']):
+                        p1.append(terminal_pb2.pollutionData(id=pollution_data['id'], timestamp=pollution_data['timer_seconds'], coefficient=float(pollution_data['value'])))
+                p_last[pollution_data['id']] = pollution_data
 
-        for x in wellness_dict.keys():
-            for y in wellness_dict[x]:
+        for id in wellness_dict.keys():
+            for wellness_data in wellness_dict[id]:
                 timer = create_timestamp(timestamp)
-                y['timer_seconds'] = timer
-                if w_last.get(y['id']) == None:
-                    w1.append(terminal_pb2.wellnessData(id=y['id'], timestamp=y['timer_seconds'], coefficient=float(y['value'])))
+                wellness_data['timer_seconds'] = timer
+                if w_last.get(wellness_data['id']) == None:
+                    w1.append(terminal_pb2.wellnessData(id=wellness_data['id'], timestamp=wellness_data['timer_seconds'], coefficient=float(wellness_data['value'])))
                 else:
-                    if y['timer_seconds'].seconds == timestamp and (w_last.get(y['id'])['timer_seconds'].seconds != (y['timer_seconds'].seconds - timesleep) and w_last.get(y['id'])['value'] != y['value']):
-                        w1.append(terminal_pb2.wellnessData(id=y['id'], timestamp=y['timer_seconds'], coefficient=float(y['value'])))
-                w_last[y['id']] = y
+                    if wellness_data['timer_seconds'].seconds == timestamp and (w_last.get(wellness_data['id'])['timer_seconds'].seconds != (wellness_data['timer_seconds'].seconds - timesleep) and w_last.get(wellness_data['id'])['value'] != wellness_data['value']):
+                        w1.append(terminal_pb2.wellnessData(id=wellness_data['id'], timestamp=wellness_data['timer_seconds'], coefficient=float(wellness_data['value'])))
+                w_last[wellness_data['id']] = wellness_data
 
         for x in stubs:
             data = terminal_pb2.airData(pollution=p1, wellness=w1)

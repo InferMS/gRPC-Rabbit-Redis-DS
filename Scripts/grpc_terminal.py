@@ -8,11 +8,8 @@ import terminal_pb2_grpc
 
 class send_resultsServicer(terminal_pb2_grpc.send_resultsServicer):
 
-    def __init__(self, servers, id_terminal):
+    def __init__(self, id_terminal):
         self.id_terminal = id_terminal
-        self.servers = servers
-        self.stubs = []
-
 
     def send_results(self, airData, context):
         terminal_service.send_results(airData.pollution,airData.wellness,self.id_terminal)
